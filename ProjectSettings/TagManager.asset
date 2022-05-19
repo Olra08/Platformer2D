@@ -7,8 +7,7 @@ TagManager:
   - Fireball
   - Boss
   - Enemy
-  - TriggerLeft
-  - TriggerRight
+  - Hero
   layers:
   - Default
   - TransparentFX
