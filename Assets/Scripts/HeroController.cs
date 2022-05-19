@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HeroController : MonoBehaviour
 {
@@ -23,6 +24,11 @@ public class HeroController : MonoBehaviour
     private float mMovement;
     private Animator mAnimator;
     private SpriteRenderer mSpriteRenderer;
+
+    private bool warpPower = false;
+
+    public Slider magicbar;
+    public Slider healthbar;
 
     private void Start()
     {
@@ -73,6 +79,26 @@ public class HeroController : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             Fire();
+        }
+
+        if (warpPower)
+        {
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                transform.position = new Vector3(
+                    transform.position.x,
+                    transform.position.y + 5,
+                    0f
+                );
+                warpPower = false;
+                magicbar.value = 0f;
+            }
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                warpPower = false;
+                healthbar.value += 0.50f;
+                magicbar.value = 0f;
+            }
         }
     }
 
@@ -144,5 +170,34 @@ public class HeroController : MonoBehaviour
             0f,
             0f
         );
+    }
+
+    public void MagicBarUpdate(float mValue)
+    {
+        magicbar.value += mValue;
+        if (magicbar.value == 1)
+        {
+            warpPower = true;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            healthbar.value -= 0.15f;
+            if (healthbar.value <= 0)
+            {
+                Destroy(gameObject);
+            }
+        }
+        if (collision.gameObject.CompareTag("Boss"))
+        {
+            healthbar.value -= 0.35f;
+            if (healthbar.value <= 0)
+            {
+                Destroy(gameObject);
+            }
+        }
     }
 }
