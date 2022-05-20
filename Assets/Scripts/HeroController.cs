@@ -141,19 +141,7 @@ public class HeroController : MonoBehaviour
             raycastDistance
         );
         mAnimator.SetBool("IsJumping", !hit);
-        /*Color rayColor;
-        if (hit)
-        {
-            rayColor = Color.red;
-        }
-        else
-        {
-            rayColor = Color.blue;
-        }
-        Debug.DrawRay(raycastOrigin.position, Vector2.down * raycastDistance, rayColor);*/
-
         return !hit;
-        // return hit == null ? true : false;
     }
 
     private void Fire()
@@ -193,7 +181,15 @@ public class HeroController : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("Boss"))
         {
-            healthbar.value -= 0.35f;
+            healthbar.value -= 0.40f;
+            if (healthbar.value <= 0)
+            {
+                Destroy(gameObject);
+            }
+        }
+        if (collision.gameObject.CompareTag("FireBallBoss"))
+        {
+            healthbar.value -= 0.25f;
             if (healthbar.value <= 0)
             {
                 Destroy(gameObject);

@@ -8,13 +8,13 @@ public class EnemyController : MonoBehaviour
 
     private float mHealth;
 
-    private bool isRunning = false;
+    public float aggroRange;
     public float speed;
+    public float gravity;
 
     private Rigidbody2D mRigidbody;
     public HeroController hero;
     public Transform heroTransform;
-    private Vector2 movement;
 
     private void Start()
     {
@@ -23,19 +23,22 @@ public class EnemyController : MonoBehaviour
     }
     private void Update()
     {
-        if (isRunning && hero != null)
+        if (hero != null)
         {
-            Vector3 heroPosition = new Vector3(heroTransform.position.x, transform.position.y, 0f);
-            Vector3 position = new Vector3(transform.position.x, 0f, 0f);
-            Vector3 direction = heroPosition - position;
-            direction.Normalize();
-            movement = direction;
+            float distToHero = Vector2.Distance(transform.position, heroTransform.position);
+            if (distToHero < aggroRange)
+            {
+                ChaseHero();
+            }
+            else
+            {
+                StopChasingHero();
+            }
         }
-        if (isRunning && hero == null)
+        if (hero == null)
         {
-            speed = 0f;
+            StopChasingHero();
         }
-
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -55,19 +58,21 @@ public class EnemyController : MonoBehaviour
         
     }
 
-    private void FixedUpdate()
+    private void ChaseHero()
     {
-        MoveEnemy(movement);
+        if (transform.position.x < heroTransform.position.x)
+        {
+            mRigidbody.velocity = new Vector2(speed, gravity);
+        }
+        else
+        {
+            mRigidbody.velocity = new Vector2(-speed, gravity);
+        }
     }
 
-    private void MoveEnemy(Vector2 direction)
+    private void StopChasingHero()
     {
-        mRigidbody.MovePosition((Vector2)transform.position + (speed * Time.deltaTime * direction));
+        mRigidbody.velocity = new Vector2(0, gravity - 5);
     }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Debug.Log("Paso checkpoint");
-        isRunning = true;
-    }
+    
 }
