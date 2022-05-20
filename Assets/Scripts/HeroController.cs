@@ -23,18 +23,21 @@ public class HeroController : MonoBehaviour
     private Rigidbody2D mRigidbody;
     private float mMovement;
     private Animator mAnimator;
-    private SpriteRenderer mSpriteRenderer;
+    private AudioSource mAudioSource;
+    public AudioClip fireballSound;
 
     private bool warpPower = false;
 
     public Slider magicbar;
     public Slider healthbar;
+    public GameObject dead;
+    public GameObject restart;
 
     private void Start()
     {
         mRigidbody = GetComponent<Rigidbody2D>();
         mAnimator = GetComponent<Animator>();
-        mSpriteRenderer = GetComponent<SpriteRenderer>();
+        mAudioSource = GetComponent<AudioSource>();
         mFireballPoint = transform.Find("FireballPoint");
     }
 
@@ -46,7 +49,6 @@ public class HeroController : MonoBehaviour
 
         if (mMovement < 0f)
         {
-            //mSpriteRenderer.flipX = true;
             transform.rotation = Quaternion.Euler(
                 0f,
                 180f,
@@ -54,7 +56,6 @@ public class HeroController : MonoBehaviour
             );
         } else if (mMovement > 0f)
         {
-            //mSpriteRenderer.flipX = false;
             transform.rotation = Quaternion.Euler(
                 0f,
                 0f,
@@ -85,11 +86,21 @@ public class HeroController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
-                transform.position = new Vector3(
-                    transform.position.x,
-                    transform.position.y + 5,
+                if (transform.rotation.y == 0f)
+                {
+                    transform.position = new Vector3(
+                    transform.position.x + 5,
+                    transform.position.y,
                     0f
-                );
+                    );
+                } else
+                {
+                    transform.position = new Vector3(
+                    transform.position.x - 5,
+                    transform.position.y,
+                    0f
+                    );
+                }
                 warpPower = false;
                 magicbar.value = 0f;
             }
@@ -146,6 +157,8 @@ public class HeroController : MonoBehaviour
 
     private void Fire()
     {
+        mAudioSource.clip = fireballSound;
+        mAudioSource.Play();
         mFireballPoint.GetComponent<ParticleSystem>().Play(); // Ejecutamos Particle System
         GameObject obj = Instantiate(fireball, mFireballPoint);
         obj.transform.parent = null;
@@ -177,6 +190,8 @@ public class HeroController : MonoBehaviour
             if (healthbar.value <= 0)
             {
                 Destroy(gameObject);
+                dead.SetActive(true);
+                restart.SetActive(true);
             }
         }
         if (collision.gameObject.CompareTag("Boss"))
@@ -185,6 +200,8 @@ public class HeroController : MonoBehaviour
             if (healthbar.value <= 0)
             {
                 Destroy(gameObject);
+                dead.SetActive(true);
+                restart.SetActive(true);
             }
         }
         if (collision.gameObject.CompareTag("FireBallBoss"))
@@ -193,6 +210,8 @@ public class HeroController : MonoBehaviour
             if (healthbar.value <= 0)
             {
                 Destroy(gameObject);
+                dead.SetActive(true);
+                restart.SetActive(true);
             }
         }
     }
@@ -202,6 +221,8 @@ public class HeroController : MonoBehaviour
         if (collision.gameObject.CompareTag("VoidOut"))
         {
             Destroy(gameObject);
+            dead.SetActive(true);
+            restart.SetActive(true);
         }
     }
 }

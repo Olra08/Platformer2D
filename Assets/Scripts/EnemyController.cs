@@ -19,7 +19,7 @@ public class EnemyController : MonoBehaviour
     private void Start()
     {
         mHealth = maxHealth;
-        mRigidbody = this.GetComponent<Rigidbody2D>();
+        mRigidbody = GetComponent<Rigidbody2D>();
     }
     private void Update()
     {
@@ -53,7 +53,7 @@ public class EnemyController : MonoBehaviour
                 Destroy(gameObject);
             }
 
-            hero.MagicBarUpdate(0.50f);
+            hero.MagicBarUpdate(0.25f);
         }
         
     }
@@ -74,5 +74,11 @@ public class EnemyController : MonoBehaviour
     {
         mRigidbody.velocity = new Vector2(0, gravity - 5);
     }
-    
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("VoidOut"))
+        {
+            Destroy(gameObject);
+        }
+    }
 }

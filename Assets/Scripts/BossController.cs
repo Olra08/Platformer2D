@@ -21,22 +21,28 @@ public class BossController : MonoBehaviour
     public GameObject fireballBoss; // prefab
     private Transform mFireballPoint1;
     private Transform mFireballPoint2;
-    private Transform mFireballPoint3;
 
     public GameObject door;
     public GameObject checkLeft;
     public GameObject checkRight;
     public GameObject bossImage;
     public GameObject bossHealthBar;
+    public GameObject image;
+    public GameObject heroHealthbar;
+    public GameObject magicbar;
+    public GameObject win;
+    public GameObject restart;
+    public GameObject doorVoidOut;
+
+    private float timer = 0f;
 
     private void Start()
     {
         mHealth = maxHealth;
-        mRigidbody = this.GetComponent<Rigidbody2D>();
+        mRigidbody = GetComponent<Rigidbody2D>();
         mSpriteRenderer = GetComponent<SpriteRenderer>();
         mFireballPoint1 = transform.Find("FireballPoint1");
         mFireballPoint2 = transform.Find("FireballPoint2");
-        mFireballPoint3 = transform.Find("FireballPoint3");
     }
     private void Update()
     {
@@ -47,6 +53,12 @@ public class BossController : MonoBehaviour
             if (distToHero < aggroRange)
             {
                 ChaseHero();
+                timer += Time.deltaTime;
+                if (timer > 1.1f)
+                {
+                    Fire();
+                    timer = 0f;
+                }
             }
             else
             {
@@ -76,11 +88,6 @@ public class BossController : MonoBehaviour
                 0f
             );
         }
-
-        if (Input.GetButtonDown("Fire1"))
-        {
-            Fire();
-        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -93,9 +100,17 @@ public class BossController : MonoBehaviour
             if (mHealth <= 0)
             {
                 Destroy(gameObject);
+                bossImage.SetActive(false);
+                bossHealthBar.SetActive(false);
+                image.SetActive(false);
+                heroHealthbar.SetActive(false);
+                magicbar.SetActive(false);
+                win.SetActive(true);
+                Destroy(hero);
+                restart.SetActive(true);
             }
 
-            hero.MagicBarUpdate(0.05f);
+            hero.MagicBarUpdate(0.10f);
         }
     }
     private void ChaseHero()
@@ -119,10 +134,8 @@ public class BossController : MonoBehaviour
     {
         GameObject obj1 = Instantiate(fireballBoss, mFireballPoint1);
         GameObject obj2 = Instantiate(fireballBoss, mFireballPoint2);
-        GameObject obj3 = Instantiate(fireballBoss, mFireballPoint3);
         obj1.transform.parent = null;
         obj2.transform.parent = null;
-        obj3.transform.parent = null;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -130,10 +143,12 @@ public class BossController : MonoBehaviour
         if (collision.gameObject.CompareTag("Hero"))
         {
             door.SetActive(true);
+            doorVoidOut.SetActive(true);
             bossImage.SetActive(true);
             bossHealthBar.SetActive(true);
             checkLeft.SetActive(false);
             checkRight.SetActive(false);
         } 
     }
+
 }
