@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - Hero
   - FireBallBoss
+  - VoidOut
   layers:
   - Default
   - TransparentFX

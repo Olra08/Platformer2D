@@ -26,6 +26,8 @@ public class BossController : MonoBehaviour
     public GameObject door;
     public GameObject checkLeft;
     public GameObject checkRight;
+    public GameObject bossImage;
+    public GameObject bossHealthBar;
 
     private void Start()
     {
@@ -64,7 +66,6 @@ public class BossController : MonoBehaviour
                 180f,
                 0f
             );
-            healthbar.direction = Slider.Direction.RightToLeft;
         }
         else if (mMovement > 0f)
         {
@@ -74,7 +75,6 @@ public class BossController : MonoBehaviour
                 0f,
                 0f
             );
-            healthbar.direction = Slider.Direction.LeftToRight;
         }
 
         if (Input.GetButtonDown("Fire1"))
@@ -130,6 +130,8 @@ public class BossController : MonoBehaviour
         if (collision.gameObject.CompareTag("Hero"))
         {
             door.SetActive(true);
+            bossImage.SetActive(true);
+            bossHealthBar.SetActive(true);
             checkLeft.SetActive(false);
             checkRight.SetActive(false);
         } 
